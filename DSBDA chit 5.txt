@@ -1,0 +1,132 @@
+Cheat number :5
+
+5. Perform the following operations using Python on the Air quality data set
+a. Data cleaning
+b. Data integration
+c. Data transformation
+d. Error correcting
+
+
+
+
+1] import pandas as pd
+   import numpy as np
+
+
+2] df = pd.read_csv('airquality_data.csv', encoding='cp1252')
+
+3]  df.head()
+
+4]df.info()
+
+5]df.columns
+
+a. Data cleaning
+
+6]
+# Change data type from float64 to float32 for Space Complexity
+df['so2'] = df['so2'].astype('float32')
+df['no2'] = df['no2'].astype('float32')
+df['rspm'] = df['rspm'].astype('float32')
+df['spm'] = df['spm'].astype('float32')
+df['date'] = df['date'].astype('string')
+df.info()
+
+
+7] df=df.drop_duplicates()
+
+
+8] df.isna().sum()
+
+9] percent_missing = df.isnull().sum() * 100 / len(df)
+
+10] percent_missing.sort_values(ascending=False)
+
+11] df=df.drop(['stn_code', 'agency','sampling_date','location_monitoring_station','pm2_5'], axis = 1)
+
+12] df.head()
+
+13] df.columns
+
+14] col_var = ['state', 'location', 'type','date']
+    col_num = ['so2','no2','rspm','spm']
+
+15]for col in df.columns:
+    if df[col].dtype == 'object' or df[col].dtype == 'string':
+        df[col] = df[col].fillna(df[col].mode()[0])
+    else:
+        df[col] = df[col].fillna(df[col].mean())
+
+
+16]df.isna().sum()
+
+17] df
+
+18] df.isna().sum()
+
+  
+Data integration:
+
+19]  subSet1 = df[['state', 'type']]
+     subSet2 = df[['state','location']]
+
+20]  subSet1.head()
+
+21] subSet2.head()
+
+22]  concatenated_df = pd.concat([subSet1, subSet2], axis=1)
+
+23]   concatenated_df
+
+d. Error correcting:
+
+
+24]  def remove_outliers(column):
+    Q1 = column.quantile(0.25)
+    Q3 = column.quantile(0.75)
+    IQR = Q3 - Q1
+    threshold = 1.5 * IQR
+    outlier_mask = (column < Q1 - threshold) | (column > Q3 + threshold)
+    return column[~outlier_mask]
+
+
+25]df.columns
+
+26]  # Remove outliers for each column using a loop
+col_name = ['so2', 'no2', 'rspm', 'spm']
+for col in col_name:
+    df[col] = remove_outliers(df[col])
+
+27]  import seaborn as sns
+import matplotlib.pyplot as plt
+
+28] plt.figure(figsize=(10, 6))  # Adjust the figure size if needed
+
+for col in col_name:
+    sns.boxplot(data=df[col])
+    plt.title(col)
+    plt.show()
+
+c. Data transformation
+
+
+29]  from sklearn.preprocessing import LabelEncoder
+
+col_label= ['state','location','type']
+# Initialize LabelEncoder
+
+encoder = LabelEncoder()
+# Iterate over columns
+for col in df.columns:
+        # Fit and transform the column
+        df[col] = encoder.fit_transform(df[col])
+
+
+30] df
+
+
+
+
+b. Data integration
+c. Data transformation
+
